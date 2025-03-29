@@ -8,7 +8,7 @@ if defined _OLD_CODEPAGE (
     "%SystemRoot%\System32\chcp.com" 65001 > nul
 )
 
-set "VIRTUAL_ENV=C:\Users\natta\OneDrive\เดสก์ท็อป\Developer\backend\venv"
+set "VIRTUAL_ENV=C:\Users\natta\OneDrive\เดสก์ท็อป\Dev101\E_Portfolio\backend\venv"
 
 if not defined PROMPT set PROMPT=$P$G
 

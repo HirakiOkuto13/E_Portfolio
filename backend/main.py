@@ -1,7 +1,8 @@
-from datetime import datetime, timedelta
-from typing import Union
+from datetime import datetime, timedelta, timezone
+from typing import List, Optional
 from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from fastapi.middleware.cors import CORSMiddleware
 from jose import JWTError, jwt
 import bcrypt
 from sqlalchemy.orm import Session
@@ -14,14 +15,24 @@ import schemas
 
 load_dotenv()  # load environment variables from .env file
 
+# API Settings
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 SECRET_KEY = os.getenv("SECRET_KEY")
 
-app = FastAPI()
+app = FastAPI(title="E-Portfolio API")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
-# Dependency
+# CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# Database Dependency
 def get_db():
     db = SessionLocal()
     try:
@@ -29,6 +40,7 @@ def get_db():
     finally:
         db.close()
 
+# Authentication Functions
 def get_password_hash(password: str) -> bytes:
     pwd_bytes = password.encode('utf-8')
     salt = bcrypt.gensalt()
@@ -39,11 +51,15 @@ def verify_password(plain_password: str, hashed_password: bytes) -> bool:
     return bcrypt.checkpw(password_byte_enc, hashed_password=hashed_password)
 
 def create_access_token(data: dict):
+    """
+    Create a JWT access token with expiration time in UTC+7 timezone
+
+    """
     to_encode = data.copy()
-    expire = datetime.now() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    bangkok_tz = timezone(timedelta(hours=7))
+    expire = datetime.now(bangkok_tz) + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     to_encode.update({"exp": expire})
-    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
-    return encoded_jwt
+    return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
 async def get_current_user(
     token: str = Depends(oauth2_scheme),
@@ -61,72 +77,78 @@ async def get_current_user(
             raise credentials_exception
     except JWTError:
         raise credentials_exception
-        
+    
     user = db.query(models.User).filter(models.User.email == email).first()
     if user is None:
         raise credentials_exception
-        
     return user
 
-class UserCreate(BaseModel):
-    email: EmailStr
-    password: str
-
-@app.post("/token")
-async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
+# Authentication Endpoints
+@app.post("/token", response_model=schemas.Token)
+async def login(
+    form_data: OAuth2PasswordRequestForm = Depends(),
+    db: Session = Depends(get_db)
+):
     user = db.query(models.User).filter(models.User.email == form_data.username).first()
     if not user or not verify_password(form_data.password, user.hashed_password):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect username or password",
+            detail="Incorrect email or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
     access_token = create_access_token(data={"sub": user.email})
     return {"access_token": access_token, "token_type": "bearer"}
 
-@app.post("/register")
-async def register(user: UserCreate, db: Session = Depends(get_db)):
-    # Check if user already exists
+@app.post("/register", status_code=status.HTTP_201_CREATED)
+async def register(user: schemas.UserCreate, db: Session = Depends(get_db)):
     db_user = db.query(models.User).filter(models.User.email == user.email).first()
     if db_user:
         raise HTTPException(status_code=400, detail="Email already registered")
     
-    # Create new user
     hashed_password = get_password_hash(user.password)
-    db_user = models.User(email=user.email, hashed_password=hashed_password)
+    db_user = models.User(
+        email=user.email,
+        hashed_password=hashed_password,
+        role=user.role
+    )
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
-    return {"email": db_user.email}
+    return {"email": db_user.email, "role": db_user.role}
 
-# Protected route example
-@app.get("/users/me")
-async def read_users_me(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
-    try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        email: str = payload.get("sub")
-        if email is None:
-            raise HTTPException(status_code=401, detail="Invalid authentication credentials")
-    except JWTError:
-        raise HTTPException(status_code=401, detail="Invalid authentication credentials")
-    
-    user = db.query(models.User).filter(models.User.email == email).first()
-    if user is None:
-        raise HTTPException(status_code=404, detail="User not found")
-    return {"email": user.email}
-
-# Profile endpoints
-@app.post("/profile")
+# Profile Endpoints
+@app.post("/profile", status_code=status.HTTP_201_CREATED)
 async def create_profile(
-    profile: schemas.ProfileCreate,
+    profile: schemas.StudentProfileCreate,
     db: Session = Depends(get_db),
     current_user: models.User = Depends(get_current_user)
 ):
-    db_profile = models.StudentProfile(**profile.dict(), user_id=current_user.id)
+    if current_user.profile:
+        raise HTTPException(status_code=400, detail="Profile already exists")
+    
+    db_profile = models.StudentProfile(
+        **profile.dict(),
+        user_id=current_user.id
+    )
     db.add(db_profile)
     db.commit()
     db.refresh(db_profile)
     return db_profile
+
+@app.get("/profile")
+async def get_profile(
+    current_user: models.User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    profile = current_user.profile
+    if not profile:
+        raise HTTPException(status_code=404, detail="Profile not found")
+    return profile
+
+# Base endpoint
+@app.get("/")
+async def root():
+    return {"message": "Welcome to E-Portfolio API"}
 
 # Activity endpoints
 @app.post("/activities")
