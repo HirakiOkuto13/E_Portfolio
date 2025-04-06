@@ -15,7 +15,7 @@ A FastAPI-based backend for managing high school student portfolios. This API pr
 
 ## Prerequisites
 
-- Python 3.11+
+- Python 3.12
 - MySQL 8.0+
 - Docker (optional)
 

@@ -9,8 +9,8 @@ from dotenv import load_dotenv
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 
 # Import your models and Base
-from models import Base
-from database import SQLALCHEMY_DATABASE_URL
+from backend.app.models.models import Base
+from backend.app.db.database import SQLALCHEMY_DATABASE_URL
 
 # Load environment variables
 load_dotenv()
