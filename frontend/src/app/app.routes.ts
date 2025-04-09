@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { authGuard } from '@core/guards/auth.guard';
+import { authGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
   {
@@ -26,25 +26,25 @@ export const routes: Routes = [
     path: 'dashboard',
     loadComponent: () => import('./features/dashboard/dashboard.component')
       .then(m => m.DashboardComponent),
-    canActivate: [() => import('./core/guards/auth.guard').then(m => m.authGuard)]
+    canActivate: [authGuard]
   },
   {
     path: 'profile',
     loadComponent: () => import('./features/profile/profile.component')
       .then(m => m.ProfileComponent),
-    canActivate: [() => import('./core/guards/auth.guard').then(m => m.authGuard)]
+    canActivate: [authGuard]
   },
   {
     path: 'activities',
     loadComponent: () => import('./features/activities/activities.component')
       .then(m => m.ActivitiesComponent),
-    canActivate: [() => import('./core/guards/auth.guard').then(m => m.authGuard)]
+    canActivate: [authGuard]
   },
   {
     path: 'awards',
     loadComponent: () => import('./features/awards/awards.component')
       .then(m => m.AwardsComponent),
-    canActivate: [() => import('./core/guards/auth.guard').then(m => m.authGuard)]
+    canActivate: [authGuard]
   },
   {
     path: '**',

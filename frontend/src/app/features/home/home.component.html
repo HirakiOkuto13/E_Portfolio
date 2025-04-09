@@ -1,1 +1,184 @@
-<p>home works!</p>
+<div class="layout-container flex h-full grow flex-col">
+  <div class="px-40 flex flex-1 justify-center py-5">
+    <div class="layout-content-container flex flex-col max-w-[960px] flex-1">
+      <div class="flex p-4 @container">
+        <div
+          class="flex w-full flex-col gap-4 @[520px]:flex-row @[520px]:justify-between @[520px]:items-center"
+        >
+          <div class="flex gap-4">
+            <div
+              class="bg-center bg-no-repeat aspect-square bg-cover rounded-full min-h-32 w-32"
+              style="
+                background-image: url('https://cdn.usegalileo.ai/sdxl10/6fb75fa2-b70b-480d-8ae0-e36395fd0163.png');
+              "
+            ></div>
+            <div class="flex flex-col justify-center">
+              <p
+                class="text-[#0d151c] text-[22px] font-bold leading-tight tracking-[-0.015em]"
+              >
+                Samantha Morgan
+              </p>
+              <p class="text-[#49779c] text-base font-normal leading-normal">
+                High School Student
+              </p>
+            </div>
+          </div>
+          <button
+            class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#e7eef4] text-[#0d151c] text-sm font-bold leading-normal tracking-[0.015em] w-full max-w-[480px] @[480px]:w-auto"
+          >
+            <span class="truncate">Edit</span>
+          </button>
+        </div>
+      </div>
+      <h2
+        class="text-[#0d151c] text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-5"
+      >
+        Activities
+      </h2>
+      <div
+        class="grid grid-cols-[repeat(auto-fit,minmax(158px,1fr))] gap-3 p-4"
+      >
+        <div
+          *ngFor="let activity of activities"
+          class="flex flex-col gap-3 pb-3 cursor-pointer group relative"
+          (click)="showActivityDetails(activity, $event)"
+        >
+          <div
+            class="w-full bg-center bg-no-repeat aspect-square bg-cover rounded-xl transition-transform group-hover:scale-105"
+            [style.backgroundImage]="'url(' + activity.imageUrl + ')'"
+            (click)="navigateToActivity(activity.id, $event)"
+          ></div>
+          <p class="text-[#0d151c] text-base font-medium leading-normal">
+            {{ activity.name }}
+          </p>
+
+          <!-- Activity Details Popup -->
+          <div
+            *ngIf="selectedActivity?.id === activity.id"
+            class="absolute top-full left-0 z-10 w-64 bg-white rounded-lg shadow-lg p-4 mt-2"
+          >
+            <div class="flex justify-between items-start mb-2">
+              <p class="text-sm text-gray-600">{{ activity.description }}</p>
+              <button
+                (click)="closePopup()"
+                class="text-gray-400 hover:text-gray-600"
+              >
+                <span class="sr-only">Close</span>
+                ×
+              </button>
+            </div>
+            <button
+              (click)="navigateToActivity(activity.id, $event)"
+              class="text-sm text-primary-600 hover:text-primary-700"
+            >
+              View Details →
+            </button>
+          </div>
+        </div>
+      </div>
+      <h2
+        class="text-[#0d151c] text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-5"
+      >
+        Awards
+      </h2>
+      <div
+        class="grid grid-cols-[repeat(auto-fit,minmax(158px,1fr))] gap-3 p-4"
+      >
+        <div
+          *ngFor="let award of awards"
+          class="flex flex-col gap-3 pb-3 cursor-pointer group relative"
+          (click)="showAwardDetails(award, $event)"
+          (dblclick)="navigateToAward(award.id)"
+        >
+          <div
+            class="w-full bg-center bg-no-repeat aspect-square bg-cover rounded-xl transition-transform group-hover:scale-105"
+            [style.backgroundImage]="'url(' + award.imageUrl + ')'"
+          ></div>
+          <p class="text-[#0d151c] text-base font-medium leading-normal">
+            {{ award.name }}
+          </p>
+
+          <!-- Award Details Popup -->
+          <div
+            *ngIf="selectedAward?.id === award.id"
+            class="absolute top-full left-0 z-10 w-64 bg-white rounded-lg shadow-lg p-4 mt-2"
+          >
+            <p class="text-sm text-gray-600 mb-2">{{ award.description }}</p>
+            <button
+              (click)="navigateToAward(award.id)"
+              class="text-sm text-primary-600 hover:text-primary-700"
+            >
+              View Details →
+            </button>
+          </div>
+        </div>
+      </div>
+      <h2
+        class="text-[#0d151c] text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-5"
+      >
+        Volunteer Work
+      </h2>
+      <div class="flex gap-4 bg-slate-50 px-4 py-3">
+        <div
+          class="bg-center bg-no-repeat aspect-square bg-cover rounded-lg size-[70px]"
+          style="
+            background-image: url('https://cdn.usegalileo.ai/sdxl10/75e8f92b-78e3-43bd-a38b-6311742abf7e.png');
+          "
+        ></div>
+        <div class="flex flex-1 flex-col justify-center">
+          <p class="text-[#0d151c] text-base font-medium leading-normal">
+            Animal Shelter Volunteer
+          </p>
+          <p class="text-[#49779c] text-sm font-normal leading-normal">
+            I volunteer at the local animal shelter every Saturday. I help walk
+            dogs, clean cages, and assist with adoptions.
+          </p>
+          <p class="text-[#49779c] text-sm font-normal leading-normal">
+            June 2021 - Present
+          </p>
+        </div>
+      </div>
+      <div class="flex gap-4 bg-slate-50 px-4 py-3">
+        <div
+          class="bg-center bg-no-repeat aspect-square bg-cover rounded-lg size-[70px]"
+          style="
+            background-image: url('https://cdn.usegalileo.ai/sdxl10/f553338f-baa8-4f43-9dfd-26f0d2064562.png');
+          "
+        ></div>
+        <div class="flex flex-1 flex-col justify-center">
+          <p class="text-[#0d151c] text-base font-medium leading-normal">
+            Food Bank Volunteer
+          </p>
+          <p class="text-[#49779c] text-sm font-normal leading-normal">
+            I volunteer at the local food bank twice a month. I help sort and
+            organize donations, pack food boxes, and distribute groceries to
+            families in need.
+          </p>
+          <p class="text-[#49779c] text-sm font-normal leading-normal">
+            April 2020 - Present
+          </p>
+        </div>
+      </div>
+      <div class="flex gap-4 bg-slate-50 px-4 py-3">
+        <div
+          class="bg-center bg-no-repeat aspect-square bg-cover rounded-lg size-[70px]"
+          style="
+            background-image: url('https://cdn.usegalileo.ai/sdxl10/c5bd7ef8-4a82-49ed-af72-a507b6570460.png');
+          "
+        ></div>
+        <div class="flex flex-1 flex-col justify-center">
+          <p class="text-[#0d151c] text-base font-medium leading-normal">
+            Senior Center Volunteer
+          </p>
+          <p class="text-[#49779c] text-sm font-normal leading-normal">
+            I volunteer at the senior center once a week. I play games, do
+            crafts, and chat with the residents.
+          </p>
+          <p class="text-[#49779c] text-sm font-normal leading-normal">
+            December 2019 - Present
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

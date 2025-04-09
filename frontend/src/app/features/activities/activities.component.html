@@ -1,1 +1,87 @@
-<p>activities works!</p>
+<div class="layout-container flex h-full grow flex-col">
+  <div class="px-40 flex flex-1 justify-center py-5">
+    <div class="layout-content-container flex flex-col max-w-[960px] flex-1">
+      <h3
+        class="text-[#0d151c] text-lg font-bold leading-tight tracking-[-0.015em] px-4 pb-2 pt-4"
+      >
+        Create a new post
+      </h3>
+      <div class="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3">
+        <label class="flex flex-col min-w-40 flex-1">
+          <input
+            placeholder="Title"
+            class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-[#0d151c] focus:outline-0 focus:ring-0 border-none bg-[#e7eef4] focus:border-none h-14 placeholder:text-[#49779c] p-4 text-base font-normal leading-normal"
+            value=""
+          />
+        </label>
+      </div>
+      <div class="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3">
+        <label class="flex flex-col min-w-40 flex-1">
+          <textarea
+            placeholder="Tell your story..."
+            class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-[#0d151c] focus:outline-0 focus:ring-0 border-none bg-[#e7eef4] focus:border-none min-h-36 placeholder:text-[#49779c] p-4 text-base font-normal leading-normal"
+          ></textarea>
+        </label>
+      </div>
+      <div class="flex w-full grow bg-slate-50 @container p-4">
+        <div
+          class="w-full gap-1 overflow-hidden bg-slate-50 @[480px]:gap-2 aspect-[3/2] rounded-xl grid grid-cols-[2fr_1fr_1fr]"
+        >
+          <div
+            class="w-full bg-center bg-no-repeat bg-cover aspect-auto rounded-none row-span-2"
+            style="
+              background-image: url('https://cdn.usegalileo.ai/sdxl10/2ae04e87-3c5e-4029-a5d6-8d83ec764907.png');
+            "
+          ></div>
+          <div
+            class="w-full bg-center bg-no-repeat bg-cover aspect-auto rounded-none"
+            style="
+              background-image: url('https://cdn.usegalileo.ai/sdxl10/29ffbb18-2f3a-4d50-a620-f7f150abef67.png');
+            "
+          ></div>
+          <div
+            class="w-full bg-center bg-no-repeat bg-cover aspect-auto rounded-none"
+            style="
+              background-image: url('https://cdn.usegalileo.ai/sdxl10/7f08e75c-e726-45ae-8777-e2df5e9da2a9.png');
+            "
+          ></div>
+          <div
+            class="w-full bg-center bg-no-repeat bg-cover aspect-auto rounded-none"
+            style="
+              background-image: url('https://cdn.usegalileo.ai/sdxl10/43a5168f-683d-48ce-95a7-64b79637ea33.png');
+            "
+          ></div>
+          <div
+            class="w-full bg-center bg-no-repeat bg-cover aspect-auto rounded-none"
+            style="
+              background-image: url('https://cdn.usegalileo.ai/sdxl10/66cf0ca1-c3e7-4104-876a-12a45b965fae.png');
+            "
+          ></div>
+        </div>
+      </div>
+      <div class="flex flex-col p-4">
+        <div
+          class="flex flex-col items-center gap-6 rounded-xl border-2 border-dashed border-[#cedde8] px-6 py-14"
+        >
+          <p
+            class="text-[#0d151c] text-lg font-bold leading-tight tracking-[-0.015em] max-w-[480px] text-center"
+          >
+            Upload media
+          </p>
+          <button
+            class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#e7eef4] text-[#0d151c] text-sm font-bold leading-normal tracking-[0.015em]"
+          >
+            <span class="truncate">Upload files</span>
+          </button>
+        </div>
+      </div>
+      <div class="flex px-4 py-3 justify-end">
+        <button
+          class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#2094f3] text-slate-50 text-sm font-bold leading-normal tracking-[0.015em]"
+        >
+          <span class="truncate">Publish</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
